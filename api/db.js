@@ -26,11 +26,6 @@ async function ensureTable(sql) {
                 registration_date TIMESTAMPTZ NOT NULL DEFAULT NOW()
             );
         `;
-        await sql`ALTER TABLE customers ADD COLUMN IF NOT EXISTS id VARCHAR(50);`;
-        await sql`ALTER TABLE customers ADD COLUMN IF NOT EXISTS name TEXT;`;
-        await sql`ALTER TABLE customers ADD COLUMN IF NOT EXISTS birth_date DATE;`;
-        await sql`ALTER TABLE customers ADD COLUMN IF NOT EXISTS phone VARCHAR(20);`;
-        await sql`ALTER TABLE customers ADD COLUMN IF NOT EXISTS registration_date TIMESTAMPTZ DEFAULT NOW();`;
     } catch (err) {
         console.error('Error ensuring customers table exists:', err);
         throw err;
