@@ -1,0 +1,3218 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>বোইঠাক খানা - BOITHOK KHANA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0a0e27;
+            color: #333;
+            scroll-behavior: smooth;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Semi-transparent background on scroll */
+        body.scrolled {
+            background-color: rgba(10, 14, 39, 0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        /* Navigation */
+        nav {
+            background: transparent; /* blend with hero: no visible bar */
+            padding: 12px 0;
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            z-index: 1000;
+            box-shadow: none;
+            transition: all 0.25s ease;
+            border-radius: 10px;
+            backdrop-filter: none;
+        }
+
+        /* Slight glass on scroll to keep contrast when content scrolls under nav */
+        nav.scrolled {
+            background: rgba(10,12,30,0.06);
+            box-shadow: none;
+            backdrop-filter: blur(6px) saturate(110%);
+            -webkit-backdrop-filter: blur(6px) saturate(110%);
+            border: none;
+            top: 8px;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            height: 100px;
+        }
+
+        .logo img {
+            height: 100px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .nav-links {
+            display: none; /* hidden on desktop, used for mobile menu only */
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #FFD700;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            padding: 8px 15px;
+            border-radius: 5px;
+        }
+
+        .nav-links a:hover {
+            background-color: rgba(255, 215, 0, 0.2);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        /* Centered tabs-style navigation (desktop) */
+        .tabs-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            background: transparent; /* only text visible by default */
+            padding: 0;
+            padding-top: 38px; /* room for walking people above tabs */
+            border-radius: 999px;
+            box-shadow: none;
+            margin: 0 auto;
+            max-width: 880px;
+            width: auto;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .tabs-container .tab {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #FFD700; /* visible text over hero */
+            font-weight: 700;
+            background: transparent;
+            transition: all 0.18s ease;
+            box-shadow: none;
+            border: none;
+            opacity: 0.95;
+        }
+
+        .tabs-container .tab:hover {
+            transform: translateY(-2px);
+            box-shadow: none;
+            color: #fff;
+            /* reveal border on hover */
+            border: 1px solid rgba(255,215,0,0.45);
+            background: rgba(255,215,0,0.04);
+            padding: 7px 11px;
+        }
+
+        .tabs-container .tab.active {
+            background: rgba(255,215,0,0.12);
+            color: #111;
+            box-shadow: none;
+            transform: translateY(-2px);
+            border: 1px solid rgba(255,215,0,0.55);
+            padding: 7px 11px;
+        }
+
+        /* Hide desktop tabs on small screens; mobile menu will show */
+        @media (max-width: 768px) {
+            .tabs-container { display: none; }
+            .nav-links { display: none; }
+            /* Mobile menu overlay blends with background; text-only links */
+            .nav-links.active {
+                display: flex;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 100vh;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 18px;
+                background: rgba(10,12,30,0.02); /* almost transparent to blend */
+                backdrop-filter: blur(6px) saturate(110%);
+                -webkit-backdrop-filter: blur(6px) saturate(110%);
+                padding-top: 120px;
+            }
+
+            .nav-links a { font-size: 18px; color: #FFD700; padding: 8px 14px; border-radius: 8px; }
+            .nav-links a:hover, .nav-links a:focus, .nav-links a:active {
+                color: #fff;
+                background: rgba(255,215,0,0.06);
+                border: 1px solid rgba(255,215,0,0.45);
+                padding: 7px 13px;
+            }
+
+            .nav-container { padding: 0 12px; }
+        }
+
+        /* Mobile close button (hidden by default) */
+        .mobile-close {
+            display: none;
+            position: fixed;
+            top: 18px;
+            right: 18px;
+            z-index: 2200;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.02);
+            color: #FFD700;
+            border: 1px solid rgba(255,255,255,0.03);
+            font-size: 30px;
+            line-height: 1;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Show close button only when menu is open (mobile) */
+        @media (max-width: 768px) {
+            body.menu-open .mobile-close { display: inline-flex; }
+        }
+
+        .hamburger-menu {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 6px;
+        }
+
+        .hamburger-menu span {
+            width: 28px;
+            height: 3px;
+            background-color: #FFD700;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger-menu.active span:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+
+        .hamburger-menu.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger-menu.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        /* Home Section Container */
+        #home {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Hero Section */
+        .hero {
+            background-image: 
+                linear-gradient(135deg, rgba(139, 0, 0, 0.5) 0%, rgba(220, 20, 60, 0.6) 100%),
+                url('https://github.com/workarijit06/BoithokKhana_social/blob/main/cover.png?raw=true');
+            background-size: cover;
+            background-position: center center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            color: white;
+            padding: 80px 20px 120px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            perspective: 1200px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 1024px) {
+            .hero {
+                background-attachment: scroll;
+            }
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: transparent;
+            opacity: 0.15;
+            pointer-events: none;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotateX(0deg); }
+            50% { transform: translateY(-20px) rotateX(2deg); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            margin: 0 auto;
+            transform-style: preserve-3d;
+            animation: slideUp 1s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateZ(-50px) translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateZ(0) translateY(0);
+            }
+        }
+
+        .hero-title {
+            font-size: 72px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            color: #FFD700;
+            text-shadow: 
+                3px 3px 0px rgba(0, 0, 0, 0.8),
+                6px 6px 0px rgba(255, 215, 0, 0.3),
+                9px 9px 20px rgba(0, 0, 0, 0.9);
+            letter-spacing: 2px;
+            transform: translateZ(20px);
+            animation: titleGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% {
+                text-shadow: 
+                    3px 3px 0px rgba(0, 0, 0, 0.8),
+                    6px 6px 0px rgba(255, 215, 0, 0.3),
+                    9px 9px 20px rgba(0, 0, 0, 0.9);
+            }
+            50% {
+                text-shadow: 
+                    3px 3px 0px rgba(0, 0, 0, 0.8),
+                    6px 6px 0px rgba(255, 215, 0, 0.3),
+                    9px 9px 30px rgba(255, 215, 0, 0.6);
+            }
+        }
+
+        .hero-subtitle {
+            font-size: 28px;
+            color: #fff;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            transform: translateZ(10px);
+            animation: subtitleSlide 1.2s ease-out;
+        }
+
+        @keyframes subtitleSlide {
+            from {
+                opacity: 0;
+                transform: translateZ(-20px) translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateZ(10px) translateX(0);
+            }
+        }
+
+        /* Floating Text Markers */
+        .hero-sections {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Menu and Location buttons need pointer events */
+        .menu-section, .location-section {
+            pointer-events: auto;
+        }
+
+        @media (max-width: 768px) {
+            .hero-sections {
+                padding: 20px 10px;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-sections {
+                padding: 15px 10px;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+
+        /* Menu Section */
+        .menu-section, .location-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 50%;
+            border: 3px solid rgba(76, 255, 180, 0.6);
+            box-shadow: 0 0 20px rgba(76, 255, 180, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            pointer-events: all;
+            max-width: auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 140px;
+            height: 140px;
+        }
+
+        .menu-section {
+            justify-self: flex-start;
+        }
+
+        .location-section {
+            justify-self: flex-end;
+        }
+
+        @media (max-width: 768px) {
+            .menu-section, .location-section {
+                padding: 20px;
+                width: 120px;
+                height: 120px;
+                border-width: 2px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .menu-section, .location-section {
+                padding: 15px;
+                width: 110px;
+                height: 110px;
+                border-width: 2px;
+            }
+        }
+
+        .menu-section:hover, .location-section:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(76, 255, 180, 0.6);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .menu-section-title, .location-section-title {
+            color: #FFD700;
+            font-size: 32px;
+            font-weight: 900;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7), 0 0 10px rgba(255, 215, 0, 0.5);
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-section:hover .menu-section-title,
+        .location-section:hover .location-section-title {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 215, 0, 0.8);
+            transform: scale(1.1);
+        }
+
+        .menu-section-subtitle, .location-section-subtitle {
+            color: #FFD700;
+            font-size: 16px;
+            font-weight: 600;
+            opacity: 0.9;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            margin: auto;
+            padding: 40px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        @keyframes bookOpen {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scaleX(0);
+            }
+            50% {
+                transform: translate(-50%, -50%) scaleX(0.5);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scaleX(1);
+            }
+        }
+
+        #menuModal .modal-content {
+            animation: bookOpen 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            background-image: url('https://github.com/workarijit06/BoithokKhana_social/blob/main/cover.png?raw=true');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 0;
+            display: flex;
+            max-width: 900px;
+            border-radius: 20px;
+            box-shadow: 
+                0 15px 50px rgba(0, 0, 0, 0.3),
+                inset -20px 0 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .book-container {
+            display: flex;
+            width: 100%;
+            position: relative;
+            overflow-y: auto;
+            max-height: 80vh;
+        }
+
+        .book-spine {
+            width: 20px;
+            background: transparent;
+            box-shadow: inset 2px 0 5px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
+        }
+
+        .book-page {
+            flex: 1;
+            padding: 40px 30px;
+            background: transparent;
+        }
+
+        .book-page:first-of-type {
+            border-right: 2px solid #e0e0e0;
+        }
+
+        .book-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: #8B0000;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .book-close:hover {
+            color: #DC143C;
+            transform: rotate(90deg);
+        }
+
+        .menu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .close {
+            color: #8B0000;
+            float: right;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close:hover {
+            color: #DC143C;
+            transform: rotate(90deg);
+        }
+
+        .close-menu {
+            position: fixed !important;
+            top: 20px !important;
+            right: 20px !important;
+            background: rgba(255, 215, 0, 0.1) !important;
+            border: 2px solid #FFD700 !important;
+            border-radius: 50% !important;
+            width: 50px !important;
+            height: 50px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: #FFD700 !important;
+            font-size: 32px !important;
+            cursor: pointer !important;
+            font-weight: bold !important;
+            z-index: 2001 !important;
+            padding: 0 !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .close-menu:hover {
+            background: rgba(255, 215, 0, 0.2) !important;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5) !important;
+            transform: rotate(90deg) !important;
+        }
+
+        /* Book Modal Media Queries */
+        @media (max-width: 900px) {
+            #menuModal .modal-content {
+                max-width: 85%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #menuModal .modal-content {
+                max-width: 95%;
+            }
+
+            .book-container {
+                flex-direction: column;
+                max-height: 80vh;
+            }
+
+            .book-spine {
+                width: 100%;
+                height: 10px;
+                flex-shrink: 0;
+            }
+
+            .book-page:first-of-type {
+                border-right: none;
+                border-bottom: 2px solid #e0e0e0;
+            }
+
+            .book-page {
+                padding: 25px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #menuModal .modal-content {
+                max-width: 98%;
+            }
+
+            .book-container {
+                max-height: 70vh;
+            }
+
+            .book-page {
+                padding: 20px 15px;
+            }
+
+            .modal-title {
+                font-size: 20px;
+                margin-bottom: 15px;
+            }
+        }
+
+        .modal-title {
+            color: #8B0000;
+            font-size: 32px;
+            margin-bottom: 25px;
+            border-bottom: 3px solid #FFD700;
+            padding-bottom: 15px;
+            clear: both;
+        }
+
+        .section-title {
+            color: #8B0000;
+            font-size: 32px;
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 3px solid #FFD700;
+            padding-bottom: 15px;
+        }
+
+        .menu-item {
+            padding: 18px 0;
+            border-bottom: 1px solid #e0e0e0;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(255, 215, 0, 0.05);
+            padding-left: 10px;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-item-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #8B0000;
+            margin-bottom: 5px;
+        }
+
+        .menu-item-desc {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 6px;
+            font-style: italic;
+        }
+
+        .menu-item-price {
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 15px;
+            display: inline-block;
+        }
+
+        .location-info {
+            text-align: center;
+            color: #333;
+        }
+
+        .location-info p {
+            margin: 15px 0;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .location-info strong {
+            color: #8B0000;
+            font-size: 18px;
+        }
+
+        .contact-btn {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #8B0000;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .contact-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        /* Social follow buttons */
+        .social-row { display: flex; gap: 16px; justify-content: center; align-items: center; flex-wrap: wrap; margin-top: 18px; }
+        .social-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            border-radius: 999px;
+            color: #fff;
+            font-weight: 700;
+            text-decoration: none;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+            transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+        }
+
+        .social-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.35); }
+
+        .social-ig { background: radial-gradient(circle at 30% 10%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); }
+        .social-fb { background: linear-gradient(90deg, #1877F2 0%, #145DBF 100%); }
+
+        /* About Section */
+        #about,
+        #updates {
+            background-image: url('https://github.com/workarijit06/BoithokKhana_social/blob/main/back1.png?raw=true');
+            background-size: 100% 100%;
+            background-position: top center;
+            background-repeat: no-repeat;
+            padding: 150px 20px 80px 20px;
+            color: white;
+        }
+
+        @media (max-width: 480px) {
+            #about,
+            #updates {
+                padding-top: 120px;
+            }
+        }
+
+        .section-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .about-content {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 50px;
+            border-radius: 15px;
+            color: #333;
+            line-height: 1.8;
+        }
+
+        .about-content h2 {
+            color: #8B0000;
+            font-size: 36px;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #FFD700;
+            padding-bottom: 15px;
+        }
+
+        .about-content p {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        /* Gallery Section */
+        #gallery {
+            background-image: url('https://github.com/workarijit06/BoithokKhana_social/blob/main/back1.png?raw=true');
+            background-size: 100% 100%;
+            background-position: top center;
+            background-repeat: no-repeat;
+            padding: 150px 20px 80px 20px;
+        }
+
+        #gallery .section-container {
+            background: rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 215, 0, 0.35);
+            border-radius: 16px;
+            padding: 35px 25px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        #gallery .section-title {
+            color: #FFD700;
+        }
+
+        @media (max-width: 480px) {
+            #gallery {
+                padding-top: 120px;
+            }
+        }
+
+        /* Menu Section */
+        #menu {
+            background-image: url('https://github.com/workarijit06/BoithokKhana_social/blob/main/ChatGPT%20Image%20May%2031,%202026,%2009_19_03%20AM.png?raw=true');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            padding: 120px 20px 80px;
+            color: white;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        #menu::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(139, 0, 0, 0.7) 0%, rgba(220, 20, 60, 0.7) 100%);
+            z-index: 0;
+        }
+
+        #menu > div {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Menu Desktop Sidebar & Layout */
+        .menu-layout {
+            display: flex;
+            gap: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+            align-items: flex-start;
+        }
+
+        .menu-sidebar {
+            width: 280px;
+            flex-shrink: 0;
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.35);
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 900;
+            color: #FFD700;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #FFD700;
+            text-align: center;
+        }
+
+        .sidebar-btn {
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+            border-left: 4px solid #FFD700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sidebar-btn:hover {
+            background: rgba(255, 215, 0, 0.25);
+            color: #FFD700;
+            transform: translateX(3px);
+        }
+
+        .sidebar-btn.active {
+            background: linear-gradient(135deg, #8B0000 0%, #DC143C 100%);
+            color: #FFD700;
+            border-left-color: #FFD700;
+            box-shadow: 0 4px 12px rgba(139, 0, 0, 0.3);
+        }
+
+        .menu-main-pane {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.35);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            min-height: 420px;
+            width: 100%;
+        }
+
+        .menu-prompt {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 70px 20px;
+            color: #eee;
+        }
+
+        .menu-prompt .prompt-icon {
+            font-size: 54px;
+            margin-bottom: 16px;
+        }
+
+        .menu-prompt h3 {
+            font-size: 22px;
+            color: #FFD700;
+            margin-bottom: 10px;
+            font-weight: 900;
+        }
+
+        .menu-prompt p {
+            font-size: 15px;
+            color: #ddd;
+        }
+
+        .category-pane {
+            display: none;
+        }
+
+        .category-pane.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .category-pane-title {
+            font-size: 24px;
+            font-weight: 900;
+            color: #FFD700;
+            border-bottom: 3px solid #FFD700;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .mobile-cat-header {
+            display: none;
+        }
+
+        .sub-heading {
+            font-weight: 700;
+            color: #FFD700;
+            font-size: 16px;
+            margin-bottom: 12px;
+            margin-top: 12px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .item-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 16px;
+        }
+
+        .menu-card {
+            background: #f9f6f0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            cursor: default;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .menu-card-img {
+            width: 100%;
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #d4a574 0%, #c99457 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .menu-card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .menu-card-img .placeholder {
+            color: rgba(0,0,0,0.2);
+            font-size: 36px;
+            font-weight: 900;
+        }
+
+        .menu-card-name {
+            padding: 10px 8px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            line-height: 1.3;
+        }
+
+        @media (max-width: 768px) {
+            .menu-layout {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .menu-sidebar {
+                display: none;
+            }
+
+            .menu-main-pane {
+                background: transparent;
+                box-shadow: none;
+                padding: 0;
+            }
+
+            .menu-prompt {
+                display: none !important;
+            }
+
+            .category-pane {
+                display: block !important;
+                background: rgba(0, 0, 0, 0.35);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 215, 0, 0.35);
+                border-radius: 14px;
+                overflow: hidden;
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+                margin-bottom: 16px;
+            }
+
+            .mobile-cat-header {
+                display: flex !important;
+                background: linear-gradient(135deg, #8B0000 0%, #DC143C 100%);
+                color: #FFD700;
+                padding: 16px 20px;
+                font-size: 16px;
+                font-weight: 900;
+                align-items: center;
+                justify-content: space-between;
+                cursor: pointer;
+            }
+
+            .mobile-cat-header .arrow {
+                transition: transform 0.3s ease;
+            }
+
+            .category-pane.open .mobile-cat-header .arrow {
+                transform: rotate(180deg);
+            }
+
+            .category-pane-content {
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.4s ease, padding 0.3s ease;
+                padding: 0 16px;
+            }
+
+            .category-pane.open .category-pane-content {
+                max-height: 2000px;
+                padding: 16px;
+            }
+
+            .category-pane-title {
+                display: none;
+            }
+
+            .item-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            .menu-card-name {
+                font-size: 12px;
+                padding: 8px 6px;
+            }
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #d4a574 0%, #c99457 100%);
+            display: block;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+
+        .gallery-item-text {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease, opacity 0.3s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.06);
+        }
+
+        .gallery-item .gallery-item-text {
+            position: absolute;
+            left: 12px;
+            bottom: 12px;
+            right: 12px;
+            margin: 0;
+            padding: 8px 10px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.28), rgba(0,0,0,0.6));
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        .gallery-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(139, 0, 0, 0.2);
+        }
+
+        /* Contact Section */
+        #contact {
+            background-image: url('https://github.com/workarijit06/BoithokKhana_social/blob/main/back1.png?raw=true');
+            background-size: 100% 100%;
+            background-position: top center;
+            background-repeat: no-repeat;
+            padding: 150px 20px 80px 20px;
+            color: white;
+        }
+
+        @media (max-width: 480px) {
+            #contact {
+                padding-top: 120px;
+            }
+        }
+
+        .contact-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 215, 0, 0.35);
+            border-radius: 16px;
+            padding: 40px 30px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .contact-container h2 {
+            font-size: 36px;
+            margin-bottom: 40px;
+            text-align: center;
+            color: #FFD700;
+            border-bottom: 3px solid #FFD700;
+            padding-bottom: 20px;
+        }
+
+        .contact-form {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 12px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #8B0000;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #FFD700;
+            box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #8B0000;
+            padding: 14px 40px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
+        }
+
+        .contact-info {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 30px;
+            color: #333;
+            text-align: center;
+        }
+
+        .contact-info p {
+            margin: 12px 0;
+            font-size: 16px;
+        }
+
+        /* Footer */
+        footer {
+            background: #1a1a1a;
+            color: #FFD700;
+            text-align: center;
+            padding: 30px 20px;
+            border-top: 3px solid #8B0000;
+        }
+
+        /* Responsive */
+        /* Tablet and Large Devices (768px - 1024px) */
+        @media (max-width: 1024px) {
+            .nav-container {
+                padding: 0 15px;
+            }
+
+            .logo {
+                height: 85px;
+            }
+
+            .logo img {
+                height: 85px;
+            }
+
+            .nav-links {
+                gap: 20px;
+            }
+
+            .nav-links a {
+                padding: 6px 12px;
+                font-size: 14px;
+            }
+
+            .hero {
+                min-height: 100vh;
+                padding: 60px 15px 100px 15px;
+                background-attachment: scroll;
+            }
+
+            .hero-sections {
+                padding: 20px 10px;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .hero-title {
+                font-size: 56px;
+            }
+
+            /* FIX: Scale down the inline-styled English title on tablets */
+            .hero-content > .hero-title:nth-child(2) {
+                font-size: 36px !important;
+            }
+
+            .hero-subtitle {
+                font-size: 22px;
+            }
+
+            /* FIX: Scale down the inline-styled English subtitle on tablets */
+            .hero-content > .hero-subtitle:nth-child(4) {
+                font-size: 16px !important;
+            }
+
+            .menu-section-title, 
+            .location-section-title {
+                font-size: 28px;
+            }
+
+            .menu-section-subtitle, 
+            .location-section-subtitle {
+                font-size: 14px;
+            }
+
+            .modal-content {
+                width: 85%;
+                padding: 30px;
+                max-height: 85vh;
+            }
+
+            .modal-title {
+                font-size: 28px;
+            }
+
+            .about-content {
+                padding: 40px;
+            }
+
+            .about-content h2 {
+                font-size: 32px;
+            }
+
+            .section-title {
+                font-size: 28px;
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                gap: 20px;
+            }
+
+            .gallery-item-text {
+                font-size: 16px;
+            }
+
+            .contact-form {
+                padding: 30px;
+            }
+
+            .form-group input,
+            .form-group textarea {
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            .submit-btn {
+                padding: 12px 30px;
+                font-size: 15px;
+            }
+
+            .contact-info p {
+                font-size: 15px;
+            }
+
+            #about,
+            #contact,
+            #updates {
+                padding: 150px 15px 60px 15px;
+            }
+
+            #gallery {
+                padding: 150px 15px 60px 15px;
+            }
+        }
+
+        /* Mobile Devices (480px - 768px) */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                gap: 15px;
+                padding: 10px 15px;
+            }
+
+            .logo {
+                height: 75px;
+            }
+
+            .logo img {
+                height: 75px;
+            }
+
+            .hamburger-menu {
+                display: flex;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 120px;
+                left: 0;
+                right: 0;
+                flex-direction: column;
+                gap: 0;
+                background: rgba(0, 0, 0, 0.95);
+                padding: 20px 0;
+                width: 100%;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links a {
+                padding: 15px 20px;
+                font-size: 14px;
+                border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+                text-align: center;
+            }
+
+            .hero {
+                min-height: 100vh;
+                padding: 40px 15px 80px 15px;
+                background-attachment: scroll;
+            }
+
+            .hero-sections {
+                padding: 20px 10px;
+                justify-content: space-between;
+                align-items: center;
+                flex-direction: row;
+            }
+
+            .hero-title {
+                font-size: 42px;
+                margin-bottom: 15px;
+            }
+
+            /* FIX: Scale down inline-styled English title on mobile */
+            .hero-content > .hero-title:nth-child(2) {
+                font-size: 26px !important;
+                margin-bottom: 10px !important;
+            }
+
+            .hero-subtitle {
+                font-size: 16px;
+                margin-bottom: 20px;
+            }
+
+            /* FIX: Scale down inline-styled English subtitle on mobile */
+            .hero-content > .hero-subtitle:nth-child(4) {
+                font-size: 14px !important;
+                margin-bottom: 15px !important;
+            }
+
+            .menu-section, 
+            .location-section {
+                padding: 15px;
+            }
+
+            .menu-section-title, 
+            .location-section-title {
+                font-size: 24px;
+            }
+
+            .menu-section-subtitle, 
+            .location-section-subtitle {
+                font-size: 13px;
+            }
+
+            .modal-content {
+                width: 90%;
+                padding: 25px;
+                max-height: 90vh;
+            }
+
+            .modal-title {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+
+            .close {
+                font-size: 28px;
+            }
+
+            .menu-item {
+                padding: 15px 0;
+            }
+
+            .menu-item-name {
+                font-size: 15px;
+            }
+
+            .menu-item-desc {
+                font-size: 12px;
+            }
+
+            .menu-item-price {
+                font-size: 14px;
+            }
+
+            .about-content {
+                padding: 25px;
+            }
+
+            .about-content h2 {
+                font-size: 26px;
+                margin-bottom: 20px;
+            }
+
+            .about-content p {
+                font-size: 15px;
+                margin-bottom: 15px;
+                line-height: 1.6;
+            }
+
+            .section-title {
+                font-size: 22px;
+                margin-bottom: 20px;
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                gap: 12px;
+            }
+
+            .gallery-item-text {
+                font-size: 14px;
+            }
+
+            .contact-container {
+                max-width: 100%;
+            }
+
+            .contact-container h2 {
+                font-size: 26px;
+                margin-bottom: 30px;
+            }
+
+            .contact-form {
+                padding: 20px;
+                border-radius: 10px;
+            }
+
+            .form-group {
+                margin-bottom: 18px;
+            }
+
+            .form-group label {
+                font-size: 14px;
+                margin-bottom: 6px;
+            }
+
+            .form-group input,
+            .form-group textarea {
+                padding: 10px;
+                font-size: 14px;
+                border-radius: 6px;
+            }
+
+            .form-group textarea {
+                min-height: 100px;
+            }
+
+            .submit-btn {
+                padding: 12px 25px;
+                font-size: 14px;
+            }
+
+            .contact-info {
+                padding: 20px;
+                margin-top: 20px;
+                border-radius: 10px;
+            }
+
+            .contact-info p {
+                font-size: 14px;
+                margin: 10px 0;
+            }
+
+            #about,
+            #contact,
+            #updates {
+                padding: 130px 15px 40px 15px;
+            }
+
+            #gallery {
+                padding: 130px 15px 40px 15px;
+            }
+
+            footer {
+                padding: 20px 15px;
+                font-size: 13px;
+            }
+
+            footer p {
+                margin: 8px 0;
+            }
+
+            .home-about-section,
+            .home-contact-section {
+                padding: 40px 15px;
+                margin-top: 80px;
+            }
+
+            .home-about-content,
+            .home-contact-container {
+                padding: 30px;
+                border-radius: 12px;
+            }
+
+            .home-about-content h2,
+            .home-contact-container h2 {
+                font-size: 28px;
+                margin-bottom: 20px;
+            }
+
+            .home-about-content p {
+                font-size: 15px;
+                margin-bottom: 15px;
+            }
+
+            .home-contact-form {
+                padding: 20px;
+            }
+
+            .home-contact-info {
+                padding: 20px;
+            }
+
+            .home-contact-info p {
+                font-size: 14px;
+                margin: 10px 0;
+            }
+        }
+
+        /* Small Mobile Devices (320px - 480px) */
+        @media (max-width: 480px) {
+            body {
+                padding-top: 0;
+            }
+
+            nav {
+                padding: 12px 0;
+                z-index: 1000;
+            }
+
+            .nav-container {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                gap: 10px;
+                padding: 10px 12px;
+            }
+
+            .logo {
+                height: 65px;
+            }
+
+            .logo img {
+                height: 65px;
+            }
+
+            .hamburger-menu {
+                display: flex;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100px;
+                left: 0;
+                right: 0;
+                flex-direction: column;
+                gap: 0;
+                background: rgba(0, 0, 0, 0.95);
+                padding: 20px 0;
+                width: 100%;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links a {
+                padding: 15px 20px;
+                font-size: 13px;
+                border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+                text-align: center;
+            }
+
+            .hero {
+                min-height: 100vh;
+                padding: 100px 15px 120px 15px;
+                background-attachment: scroll;
+                margin-top: 0;
+                overflow: visible;
+            }
+
+            .hero-content {
+                max-width: 100%;
+                z-index: 5;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .hero-title {
+                font-size: 28px;
+                margin-bottom: 8px;
+            }
+
+            /* FIX: Override inline font-size on the English title for small screens */
+            .hero-content > .hero-title:nth-child(2) {
+                font-size: 20px !important;
+                margin-bottom: 6px !important;
+            }
+
+            .hero-subtitle {
+                font-size: 12px;
+                margin-bottom: 12px;
+            }
+
+            /* FIX: Override inline font-size on the English subtitle for small screens */
+            .hero-content > .hero-subtitle:nth-child(4) {
+                font-size: 11px !important;
+                margin-bottom: 10px !important;
+            }
+
+            .hero-sections {
+                position: absolute;
+                bottom: 30px;
+                top: auto;
+                left: 50%;
+                transform: translateX(-50%);
+                width: calc(100% - 30px);
+                padding: 0;
+                justify-content: space-between;
+                align-items: center;
+                flex-direction: row;
+                gap: 15px;
+                z-index: 100;
+                height: auto;
+            }
+
+
+            .menu-section, 
+            .location-section {
+                padding: 10px;
+                width: 80px;
+                height: 80px;
+                border-width: 2px;
+                font-size: 12px;
+            }
+
+            .menu-section-title,
+            .location-section-title {
+                font-size: 20px;
+                margin-bottom: 5px;
+            }
+
+            .menu-section-subtitle,
+            .location-section-subtitle {
+                font-size: 11px;
+            }
+
+            .menu-section-title, 
+            .location-section-title {
+                font-size: 18px;
+                margin-bottom: 8px;
+            }
+
+            .menu-section-subtitle, 
+            .location-section-subtitle {
+                font-size: 13px;
+            }
+
+            .modal-content {
+                width: 95%;
+                padding: 20px;
+                max-height: 95vh;
+            }
+
+            .modal-title {
+                font-size: 20px;
+                margin-bottom: 15px;
+            }
+
+            .close {
+                font-size: 24px;
+            }
+
+            .menu-item {
+                padding: 12px 0;
+            }
+
+            .menu-item-name {
+                font-size: 14px;
+            }
+
+            .menu-item-desc {
+                font-size: 11px;
+            }
+
+            .menu-item-price {
+                font-size: 13px;
+            }
+
+            .about-content {
+                padding: 18px;
+                border-radius: 12px;
+            }
+
+            .about-content h2 {
+                font-size: 22px;
+                margin-bottom: 15px;
+            }
+
+            .about-content p {
+                font-size: 14px;
+                margin-bottom: 12px;
+                line-height: 1.5;
+            }
+
+            .section-title {
+                font-size: 20px;
+                margin-bottom: 15px;
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            .gallery-item {
+                aspect-ratio: 1;
+            }
+
+            .gallery-item-text {
+                font-size: 12px;
+            }
+
+            .contact-container {
+                max-width: 100%;
+            }
+
+            .contact-container h2 {
+                font-size: 22px;
+                margin-bottom: 20px;
+            }
+
+            .contact-form {
+                padding: 15px;
+                border-radius: 10px;
+            }
+
+            .form-group {
+                margin-bottom: 15px;
+            }
+
+            .form-group label {
+                font-size: 13px;
+                margin-bottom: 5px;
+            }
+
+            .form-group input,
+            .form-group textarea {
+                padding: 9px;
+                font-size: 13px;
+                border-radius: 5px;
+            }
+
+            .form-group textarea {
+                min-height: 90px;
+            }
+
+            .submit-btn {
+                padding: 11px 20px;
+                font-size: 13px;
+            }
+
+            .contact-info {
+                padding: 15px;
+                margin-top: 15px;
+                border-radius: 10px;
+            }
+
+            .contact-info p {
+                font-size: 13px;
+                margin: 8px 0;
+            }
+
+            #about,
+            #contact,
+            #updates {
+                padding: 120px 12px 30px 12px;
+            }
+
+            #gallery {
+                padding: 120px 12px 30px 12px;
+            }
+
+            footer {
+                padding: 15px 12px;
+                font-size: 12px;
+            }
+
+            footer p {
+                margin: 6px 0;
+            }
+
+            .section-container {
+                padding: 0;
+            }
+
+            .contact-btn {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+
+            .home-about-section,
+            .home-contact-section {
+                padding: 30px 12px;
+                margin-top: 100px;
+            }
+
+            .home-about-content,
+            .home-contact-container {
+                padding: 25px;
+                border-radius: 12px;
+            }
+
+            .home-about-content h2,
+            .home-contact-container h2 {
+                font-size: 22px;
+                margin-bottom: 15px;
+            }
+
+            .home-about-content p {
+                font-size: 14px;
+                margin-bottom: 12px;
+            }
+
+            .home-contact-form {
+                padding: 15px;
+            }
+
+            .home-contact-info {
+                padding: 15px;
+            }
+
+            .home-contact-info p {
+                font-size: 13px;
+                margin: 8px 0;
+            }
+        }
+
+        /* Extra Small Devices (under 320px) */
+        @media (max-width: 360px) {
+            .hero-title {
+                font-size: 28px;
+                text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.8);
+            }
+
+            /* FIX: Override inline font-size on tiny screens too */
+            .hero-content > .hero-title:nth-child(2) {
+                font-size: 18px !important;
+            }
+
+            .hero-content > .hero-subtitle:nth-child(4) {
+                font-size: 10px !important;
+            }
+
+            .modal-content {
+                width: 98%;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        section {
+            transition: opacity 0.5s ease;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .visible {
+            display: block !important;
+        }
+
+        /* Scroll Animation Styles */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(60px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .scroll-section {
+            animation: fadeInUp 0.8s ease-out forwards !important;
+        }
+
+        .scroll-section:nth-child(1) {
+            animation-delay: 0s !important;
+        }
+
+        .scroll-section:nth-child(2) {
+            animation-delay: 0.2s !important;
+        }
+
+        .scroll-section:nth-child(3) {
+            animation-delay: 0.4s !important;
+        }
+
+        /* Ensure About and Contact sections are visible */
+        .home-about-section,
+        .home-contact-section {
+            opacity: 1 !important;
+            display: block !important;
+            visibility: visible !important;
+        }
+
+        /* Home Page Embedded Sections */
+        .home-about-section,
+        .home-contact-section {
+            animation: fadeInUp 0.8s ease-out;
+            flex-shrink: 0;
+        }
+
+        .home-about-section {
+            background: transparent;
+            padding: 80px 20px;
+            color: white;
+            transition: all 0.6s ease;
+        }
+
+        /* Black and white background on scroll */
+        .home-about-section.dark-theme {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.85) 0%, rgba(20, 20, 20, 0.85) 100%), url('https://github.com/workarijit06/BoithokKhana_social/blob/main/back1.png?raw=true');
+            background-size: 100% 100%;
+            background-position: top center;
+            background-repeat: no-repeat;
+            background-blend-mode: multiply;
+        }
+
+        .home-contact-section {
+            background: transparent;
+            padding: 80px 20px;
+            color: white;
+            transition: all 0.6s ease;
+        }
+
+        /* Dark theme for contact section */
+        .home-contact-section.dark-theme {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.85) 0%, rgba(20, 20, 20, 0.85) 100%), url('https://github.com/workarijit06/BoithokKhana_social/blob/main/back1.png?raw=true');
+            background-size: 100% 100%;
+            background-position: top center;
+            background-repeat: no-repeat;
+            background-blend-mode: multiply;
+        }
+
+        .home-about-content,
+        .home-contact-container {
+            background: transparent;
+            padding: 50px;
+            border-radius: 15px;
+            color: #333;
+            line-height: 1.8;
+            max-width: 1000px;
+            margin: 0 auto;
+            transition: all 0.6s ease;
+        }
+
+        /* Dark theme text colors */
+        .home-about-section.dark-theme .home-about-content,
+        .home-about-section.dark-theme .home-contact-container {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            color: #fff;
+        }
+
+        .home-about-section.dark-theme .home-about-content h2,
+        .home-about-section.dark-theme .home-contact-container h2 {
+            color: #fff;
+            border-bottom-color: #fff;
+        }
+
+        .home-about-content h2,
+        .home-contact-container h2 {
+            color: #8B0000;
+            font-size: 36px;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #FFD700;
+            padding-bottom: 15px;
+        }
+
+        .home-about-content p {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .home-contact-form {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 12px;
+            color: #333;
+            margin-bottom: 30px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+            transition: all 0.6s ease;
+        }
+
+        /* Dark theme for contact form */
+        .home-contact-section.dark-theme .home-contact-form {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            color: #fff;
+        }
+
+        .home-contact-section.dark-theme .home-contact-form input,
+        .home-contact-section.dark-theme .home-contact-form textarea {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .home-contact-section.dark-theme .home-contact-form input::placeholder,
+        .home-contact-section.dark-theme .home-contact-form textarea::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .home-contact-info {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px auto 0;
+            color: #333;
+            text-align: center;
+            max-width: 1000px;
+            transition: all 0.6s ease;
+        }
+
+        /* Dark theme for contact info */
+        .home-contact-section.dark-theme .home-contact-info {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            color: #fff;
+        }
+
+        /* ===== WALKING PEOPLE NAV ANIMATION ===== */
+
+        .nav-people {
+            position: absolute;
+            top: 2px;
+            left: 0;
+            height: 34px;
+            display: flex;
+            align-items: flex-end;
+            gap: 0;
+            transition: left 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        /* The group: table + 3 people */
+        .people-group {
+            display: flex;
+            align-items: flex-end;
+            gap: 0;
+            position: relative;
+        }
+
+        /* Mini table */
+        .mini-table {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 52px;
+            height: 3px;
+            background: #FFD700;
+            border-radius: 1px;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .mini-table::before,
+        .mini-table::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 8px;
+            background: #FFD700;
+            top: 3px;
+            border-radius: 0 0 1px 1px;
+        }
+
+        .mini-table::before { left: 5px; }
+        .mini-table::after { right: 5px; }
+
+        /* Hide table while walking */
+        .nav-people.walking .mini-table {
+            opacity: 0;
+        }
+
+        /* Each person */
+        .person {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 18px;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .person .p-head {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #FFD700;
+            margin-bottom: 1px;
+            position: relative;
+        }
+
+        .person .p-body {
+            width: 2px;
+            height: 9px;
+            background: #FFD700;
+            border-radius: 1px;
+            position: relative;
+        }
+
+        /* Arms */
+        .person .p-arms {
+            position: absolute;
+            top: 11px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 14px;
+            height: 2px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .person .p-arm {
+            width: 6px;
+            height: 2px;
+            background: #FFD700;
+            border-radius: 1px;
+            transform-origin: center;
+            transition: transform 0.3s ease;
+        }
+
+        .person .p-arm-l {
+            transform-origin: right center;
+        }
+
+        .person .p-arm-r {
+            transform-origin: left center;
+        }
+
+        /* Legs */
+        .person .p-legs {
+            display: flex;
+            gap: 3px;
+            position: relative;
+        }
+
+        .person .p-leg {
+            width: 2px;
+            height: 9px;
+            background: #FFD700;
+            border-radius: 1px;
+            transform-origin: top center;
+            transition: transform 0.3s ease;
+        }
+
+        /* ---- SITTING STATE ---- */
+        .nav-people.sitting .person {
+            transform: translateY(4px);
+        }
+
+        .nav-people.sitting .person .p-leg-l {
+            transform: rotate(90deg) translateX(2px);
+        }
+
+        .nav-people.sitting .person .p-leg-r {
+            transform: rotate(-90deg) translateX(-2px);
+        }
+
+        .nav-people.sitting .person .p-arm-l {
+            transform: rotate(-30deg);
+        }
+
+        .nav-people.sitting .person .p-arm-r {
+            transform: rotate(30deg);
+        }
+
+        /* ---- WALKING STATE ---- */
+        .nav-people.walking .person {
+            transform: translateY(0);
+        }
+
+        .nav-people.walking .person .p-leg-l {
+            animation: legSwingL 0.35s ease-in-out infinite alternate;
+        }
+
+        .nav-people.walking .person .p-leg-r {
+            animation: legSwingR 0.35s ease-in-out infinite alternate;
+        }
+
+        .nav-people.walking .person .p-arm-l {
+            animation: armSwingL 0.35s ease-in-out infinite alternate;
+        }
+
+        .nav-people.walking .person .p-arm-r {
+            animation: armSwingR 0.35s ease-in-out infinite alternate;
+        }
+
+        /* Body bob when walking */
+        .nav-people.walking .person .p-body {
+            animation: bodyBob 0.35s ease-in-out infinite alternate;
+        }
+
+        @keyframes legSwingL {
+            0% { transform: rotate(25deg); }
+            100% { transform: rotate(-25deg); }
+        }
+
+        @keyframes legSwingR {
+            0% { transform: rotate(-25deg); }
+            100% { transform: rotate(25deg); }
+        }
+
+        @keyframes armSwingL {
+            0% { transform: rotate(20deg); }
+            100% { transform: rotate(-15deg); }
+        }
+
+        @keyframes armSwingR {
+            0% { transform: rotate(-20deg); }
+            100% { transform: rotate(15deg); }
+        }
+
+        @keyframes bodyBob {
+            0% { transform: translateY(-1px); }
+            100% { transform: translateY(1px); }
+        }
+
+        /* ---- STANDING (transition state) ---- */
+        .nav-people.standing .person {
+            transform: translateY(0);
+        }
+
+        .nav-people.standing .person .p-leg-l,
+        .nav-people.standing .person .p-leg-r {
+            transform: rotate(0deg);
+        }
+
+        .nav-people.standing .person .p-arm-l,
+        .nav-people.standing .person .p-arm-r {
+            transform: rotate(0deg);
+        }
+
+        /* Stagger each person slightly for natural look */
+        .person:nth-child(2) .p-leg-l,
+        .person:nth-child(2) .p-arm-r {
+            animation-delay: 0.1s;
+        }
+
+        .person:nth-child(3) .p-leg-l,
+        .person:nth-child(3) .p-arm-r {
+            animation-delay: 0.2s;
+        }
+
+        /* Hide walking people on mobile (tabs are hidden too) */
+        @media (max-width: 768px) {
+            .nav-people {
+                display: none !important;
+            }
+        }
+
+        /* ===== END WALKING PEOPLE ===== */
+
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/logo.png?raw=true"></div>
+            <div class="tabs-container" id="tabsContainer">
+                <a href="#home" class="tab" onclick="showSection('home');">Home</a>
+                <a href="#menu" class="tab" onclick="showSection('menu');">Menu</a>
+                <a href="#about" class="tab" onclick="showSection('about');">About</a>
+                <a href="#gallery" class="tab" onclick="showSection('gallery');">Gallery</a>
+                <a href="#contact" class="tab" onclick="showSection('contact');">Contact</a>
+                <a href="#updates" class="tab" onclick="showSection('updates');">Future Updates</a>
+                <a href="customer-entry.html" target="_blank" class="tab">Data Entry</a>
+
+                <!-- Walking People Animation -->
+                <div class="nav-people sitting" id="navPeople">
+                    <div class="people-group">
+                        <div class="mini-table"></div>
+                        <!-- Person 1 -->
+                        <div class="person">
+                            <div class="p-head"></div>
+                            <div class="p-body"></div>
+                            <div class="p-arms">
+                                <div class="p-arm p-arm-l"></div>
+                                <div class="p-arm p-arm-r"></div>
+                            </div>
+                            <div class="p-legs">
+                                <div class="p-leg p-leg-l"></div>
+                                <div class="p-leg p-leg-r"></div>
+                            </div>
+                        </div>
+                        <!-- Person 2 -->
+                        <div class="person">
+                            <div class="p-head"></div>
+                            <div class="p-body"></div>
+                            <div class="p-arms">
+                                <div class="p-arm p-arm-l"></div>
+                                <div class="p-arm p-arm-r"></div>
+                            </div>
+                            <div class="p-legs">
+                                <div class="p-leg p-leg-l"></div>
+                                <div class="p-leg p-leg-r"></div>
+                            </div>
+                        </div>
+                        <!-- Person 3 -->
+                        <div class="person">
+                            <div class="p-head"></div>
+                            <div class="p-body"></div>
+                            <div class="p-arms">
+                                <div class="p-arm p-arm-l"></div>
+                                <div class="p-arm p-arm-r"></div>
+                            </div>
+                            <div class="p-legs">
+                                <div class="p-leg p-leg-l"></div>
+                                <div class="p-leg p-leg-r"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hamburger-menu" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home" onclick="showSection('home'); closeMenu()">Home</a></li>
+                <li><a href="#menu" onclick="showSection('menu'); closeMenu()">Menu</a></li>
+                <li><a href="#about" onclick="showSection('about'); closeMenu()"> About</a></li>
+                <li><a href="#gallery" onclick="showSection('gallery'); closeMenu()">Gallery</a></li>
+                <li><a href="#contact" onclick="showSection('contact'); closeMenu()">Contact</a></li>
+                <li><a href="#updates" onclick="showSection('updates'); closeMenu()">Future Updates</a></li>
+                <li><a href="customer-entry.html" target="_blank" onclick="closeMenu()">Data Entry</a></li>
+            </ul>
+            <button class="mobile-close" onclick="closeMenu()" aria-label="Close menu">&times;</button>
+        </div>
+    </nav>
+
+    <!-- Home Section -->
+    <section id="home" class="visible">
+        <div class="hero">
+            <div class="hero-content">
+                <div class="hero-title">বৈঠকখানা</div>
+                <div class="hero-title" style="color: white; font-size: 48px;">BOITHOK KHANA</div>
+                <div class="hero-subtitle">একসাথে গল্প, একসাথে আড্ডা</div>
+                <div class="hero-subtitle" style="font-size: 20px;">Stories together, Adda together</div>
+            </div>
+
+            <!-- Floating Text Markers -->
+            <div class="hero-sections">
+                <!-- Left: Menu -->
+                <div class="menu-section" onclick="showSection('menu')">
+                    <div class="menu-section-title">মেনু</div>
+                    <div class="menu-section-subtitle">Menu</div>
+                </div>
+
+                <!-- Right: Location -->
+                <div class="location-section" onclick="openLocationModal()">
+                    <div class="location-section-title">অবস্থান</div>
+                    <div class="location-section-subtitle">Location</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Location Modal -->
+        <div id="locationModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeLocationModal()">&times;</span>
+                <h2 class="modal-title">আমাদের অবস্থান (Our Location)</h2>
+                
+                <div class="location-info">
+                 <p>
+                        <strong>Shop Name:</strong><br>
+                        Boithok Khana
+                    </p>
+                    <p>
+                        <strong>Address:</strong><br>
+                         Nilkantha Sarkar St, Bagbazar, Sukhsanatantala, Chandannagar, West Bengal 712136<br>
+                         Near Indumati Girls School.
+                    </p>
+                    <p>
+                        <strong>Google Maps:</strong><br>
+                        <a href="https://maps.app.goo.gl/7K411D9jcqvVvng68" target="_blank" rel="noopener" style="color: #8B0000; font-weight: bold; text-decoration: underline;">📍 Google Maps-এ অবস্থান দেখুন (View on Google Maps)</a>
+                    </p>
+                    <p>
+                        <strong>Opening Hours:</strong><br>
+                        Everyday: 1:00 PM – 10:00 PM<br>
+                        (Open seven days a week)
+                    </p>
+                    <p>
+                        <strong>Specialties:</strong><br>
+                        Fresh and healthy food<br>
+                        Perfect for family and friends
+                    </p>
+                    <button class="contact-btn" onclick="closeLocationModal(); scrollToSection('home-contact')">আমাদের সাথে যোগাযোগ করুন</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Section within Home -->
+        <div class="home-about-section scroll-section">
+            <div class="section-container">
+                <div class="home-about-content">
+                    <h2>আমাদের সম্পর্কে (About Us)</h2>
+                    <p>
+                    চন্দননগরের বুকে আড্ডা আর দুর্দান্ত খাবারের এক নতুন ঠিকানা হলো আমাদের ক্যাফে 'বৈঠকখানা'। এখানে মুখরোচক স্ন্যাকস থেকে শুরু করে জিভে জল আনা বিরিয়ানি ও নানা মেইন কোর্স পেয়ে যাবেন।                    </p>
+                    <p>
+                       বন্ধুবান্ধব বা প্রিয়জনদের সাথে সুন্দর সময় কাটানোর জন্য এটি একটি আদর্শ জায়গা। আমাদের এখানকার সুন্দর পরিবেশে আপনাদের রোজকার গল্প-আড্ডা হয়ে উঠবে আরও জমজমাট।
+                    <p>
+                       আড্ডার পাশাপাশি যারা ল্যাপটপে অফিসের কাজ করতে চান, তাদের জন্যও আমাদের ক্যাফের পরিবেশ খুবই শান্ত। কোনো রকম কোলাহল ছাড়াই এখানে বসে নিশ্চিন্তে নিজের দরকারি কাজ সেরে নিতে পারবেন।
+                    </p>
+                    <p>
+                        সবার কথা মাথায় রেখে বর্তমানে আমাদের ক্যাফের সব খাবারের দাম অত্যন্ত কম রাখা হয়েছে। আজই চলে আসুন, আর সাধ্যের মধ্যে সেরা খাবারের স্বাদ উপভোগ করুন।
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Section within Home -->
+        <div id="home-contact" class="home-contact-section scroll-section">
+            <div class="home-contact-form" style="display:flex; flex-direction:column; align-items:center; text-align:center;">
+                <h2>Follow Us & Contact</h2>
+                <p style="font-size:16px; margin-top:8px; color:#333; max-width:700px;">Follow us on Instagram and Facebook for photos, menu updates and special offers. You can also reach us via WhatsApp or email — details below.</p>
+
+                <div class="social-row" style="margin-top:18px; justify-content:center;">
+                    <a class="social-btn social-ig" href="https://www.instagram.com/boithok_khana26?igsi=MXc4a3FuY3R2eHN3cA==" target="_blank" rel="noopener">📸 Instagram — @boithok_khana26</a>
+                    <a class="social-btn social-fb" href="https://www.facebook.com/share/1Big3cWn8X/" target="_blank" rel="noopener">👍 Facebook — Boithok Khana</a>
+                </div>
+
+                <div class="home-contact-info" style="margin-top:18px; background: rgba(255,255,255,0.95); padding:18px; border-radius:10px; max-width:640px; color:#333; text-align:left;">
+                    <p><strong>📧 Email:</strong> boithakkhana26@gmail.com</p>
+                    <p><strong>💬 WhatsApp (text only):</strong> +91-9433459785 — Please message us on WhatsApp; avoid regular voice calls to this number.</p>
+                    <p><strong>⏰ Working Hours:</strong> 1:00 PM – 10:00 PM</p>
+                    <p><strong>📍 Location:</strong> <a href="https://maps.app.goo.gl/4Q6uFuPWnWvJwki67" target="_blank" rel="noopener" style="color: inherit; text-decoration: underline;">Nilkantha Sarkar St, Bagbazar, Sukhsanatantala, Chandannagar, West Bengal 712136</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu" class="hidden">
+        <button class="close-menu" onclick="showSection('home'); closeMenu();" title="Close Menu">&times;</button>
+        <div style="padding: 120px 20px 40px; text-align: center;">
+            <h2 style="color: #FFD700; font-size: 42px; margin-bottom: 12px; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); font-weight: 900;">আমাদের মেনু</h2>
+            <p style="color: white; font-size: 16px; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);">(Our Menu)</p>
+        </div>
+
+        <div class="menu-layout" style="padding: 0 20px 80px;">
+
+            <!-- Left Sidebar (Desktop) -->
+            <div class="menu-sidebar">
+                <div class="sidebar-title">মেনু আইটেম টাইপ (Menu Categories)</div>
+                <div class="sidebar-btn" data-cat="momo" onclick="selectDesktopCategory('momo')">
+                    <span>🥟 Momo</span> <span>➔</span>
+                </div>
+                <div class="sidebar-btn" data-cat="noodles" onclick="selectDesktopCategory('noodles')">
+                    <span>🍜 Noodles</span> <span>➔</span>
+                </div>
+                <div class="sidebar-btn" data-cat="mains" onclick="selectDesktopCategory('mains')">
+                    <span>🍖 Main Items & Sides</span> <span>➔</span>
+                </div>
+                <div class="sidebar-btn" data-cat="rolls" onclick="selectDesktopCategory('rolls')">
+                    <span>🌯 Rolls & Moglai</span> <span>➔</span>
+                </div>
+                <div class="sidebar-btn" data-cat="snacks" onclick="selectDesktopCategory('snacks')">
+                    <span>🍤 Snacks & Fried Items</span> <span>➔</span>
+                </div>
+                <div class="sidebar-btn" data-cat="desserts" onclick="selectDesktopCategory('desserts')">
+                    <span>🍨 Desserts & Beverages</span> <span>➔</span>
+                </div>
+            </div>
+
+            <!-- Main Pane (Desktop Right Area / Mobile Panes) -->
+            <div class="menu-main-pane">
+
+                <!-- Initial Looking Prompt when no category is selected on PC -->
+                <div class="menu-prompt" id="menuPrompt">
+                    <div class="prompt-icon">👈</div>
+                    <h3>মেনু দেখতে বামপাশের আইটেম টাইপে ক্লিক করুন</h3>
+                    <p>To view the menu items, please click on any item category tab from the left side list.</p>
+                </div>
+
+                <!-- 1. Momo Category -->
+                <div class="category-pane" id="pane-momo">
+                    <div class="mobile-cat-header" onclick="toggleMobilePane(this)">
+                        <span>🥟 Momo (Chicken & Veg)</span> <span class="arrow">▼</span>
+                    </div>
+                    <div class="category-pane-content">
+                        <h3 class="category-pane-title">🥟 Momo (Chicken & Veg)</h3>
+                        <div class="sub-heading">Chicken</div>
+                        <div class="item-grid">
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/c%20soup%20momo.jpg?raw=true" alt="Chicken Soup Momo"></div><div class="menu-card-name">Chicken Soup Momo</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/fry%20momo.jpg?raw=true" alt="Chicken Fry Momo"></div><div class="menu-card-name">Chicken Fry Momo</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/gravy%20momo.jpg?raw=true" alt="Gravy Momo"></div><div class="menu-card-name">Gravy Momo</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/C%20steam%20momo.jpg?raw=true" alt="Steam Momo"></div><div class="menu-card-name">Steam Momo</div></div>
+                        </div>
+                        <div class="sub-heading">Veg</div>
+                        <div class="item-grid">
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/c%20soup%20momo.jpg?raw=true" alt="Veg Soup Momo"></div><div class="menu-card-name">Veg Soup Momo</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/fry%20momo.jpg?raw=true" alt="Veg Fry Momo"></div><div class="menu-card-name">Veg Fry Momo</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/gravy%20momo.jpg?raw=true" alt="Veg Gravy Momo"></div><div class="menu-card-name">Veg Gravy Momo</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/kurkure%20momo.jpg?raw=true" alt="Kurkure Momo"></div><div class="menu-card-name">Kurkure Momo</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Noodles Category -->
+                <div class="category-pane" id="pane-noodles">
+                    <div class="mobile-cat-header" onclick="toggleMobilePane(this)">
+                        <span>🍜 Noodles</span> <span class="arrow">▼</span>
+                    </div>
+                    <div class="category-pane-content">
+                        <h3 class="category-pane-title">🍜 Noodles</h3>
+                        <div class="item-grid">
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/chowmin%20egg.jpg?raw=true" alt="Chowmin - Egg"></div><div class="menu-card-name">Chowmin - Egg</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/chowmin%20veg.jpg?raw=true" alt="Chowmin - Veg"></div><div class="menu-card-name">Chowmin - Veg</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/chowmin%20mix.jpg?raw=true" alt="Chowmin - Mixed"></div><div class="menu-card-name">Chowmin - Mixed</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/chicken%20chowmin.jpg?raw=true" alt="Chowmin - Chicken"></div><div class="menu-card-name">Chowmin - Chicken</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Main Items & Sides -->
+                <div class="category-pane" id="pane-mains">
+                    <div class="mobile-cat-header" onclick="toggleMobilePane(this)">
+                        <span>🍖 Main Items & Sides</span> <span class="arrow">▼</span>
+                    </div>
+                    <div class="category-pane-content">
+                        <h3 class="category-pane-title">🍖 Main Items & Sides</h3>
+                        <div class="item-grid">
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/Chilli%20Chicken.jpg?raw=true" alt="Chilli Chicken"></div><div class="menu-card-name">Chilli Chicken</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/Fried%20Rice%20-%20Veg.jpg?raw=true" alt="Fried Rice - Veg"></div><div class="menu-card-name">Fried Rice - Veg</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/Fried%20Rice%20-%20Egg.jpg?raw=true" alt="Fried Rice - Egg"></div><div class="menu-card-name">Fried Rice - Egg</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/Fried%20Rice%20-%20Chicken.jpg?raw=true" alt="Fried Rice - Chicken"></div><div class="menu-card-name">Fried Rice - Chicken</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/Fried%20Rice%20-%20Mixed.jpg?raw=true" alt="Fried Rice - Mixed"></div><div class="menu-card-name">Fried Rice - Mixed</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/Crispy%20Chicken.jpg?raw=true" alt="Crispy Chicken"></div><div class="menu-card-name">Crispy Chicken</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/Biryani%20-%20Egg.jpg?raw=true" alt="Biryani - Egg"></div><div class="menu-card-name">Biryani - Egg</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/Biryani%20-%20Chicken.jpg?raw=true" alt="Biryani - Chicken"></div><div class="menu-card-name">Biryani - Chicken</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/Biryani%20-%20Mutton.jpg?raw=true" alt="Biryani - Mutton"></div><div class="menu-card-name">Biryani - Mutton</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Rolls & Moglai -->
+                <div class="category-pane" id="pane-rolls">
+                    <div class="mobile-cat-header" onclick="toggleMobilePane(this)">
+                        <span>🌯 Rolls & Moglai</span> <span class="arrow">▼</span>
+                    </div>
+                    <div class="category-pane-content">
+                        <h3 class="category-pane-title">🌯 Rolls & Moglai</h3>
+                        <div class="item-grid">
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/Egg%20Roll.jpg?raw=true" alt="Egg Roll"></div><div class="menu-card-name">Egg Roll</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/Chicken%20Roll.jpg?raw=true" alt="Chicken Roll"></div><div class="menu-card-name">Chicken Roll</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/Egg-Chicken%20Roll.jpg?raw=true" alt="Egg-Chicken Roll"></div><div class="menu-card-name">Egg-Chicken Roll</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/Paneer%20Roll.jpg?raw=true" alt="Paneer Roll"></div><div class="menu-card-name">Paneer Roll</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/Veg%20Roll.jpg?raw=true" alt="Veg Roll"></div><div class="menu-card-name">Veg Roll</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/Moglai%20-%20Egg.jpg?raw=true" alt="Moglai - Egg"></div><div class="menu-card-name">Moglai - Egg</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/Moglai%20-%20Chicken.jpg?raw=true" alt="Moglai - Chicken"></div><div class="menu-card-name">Moglai - Chicken</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/Moglai%20-%20Boithak%20Khana%20Spec..jpg?raw=true" alt="Moglai - Boithak Khana Spec."></div><div class="menu-card-name">Moglai - Boithak Khana Spec.</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Snacks & Fried Items -->
+                <div class="category-pane" id="pane-snacks">
+                    <div class="mobile-cat-header" onclick="toggleMobilePane(this)">
+                        <span>🍤 Snacks & Fried Items</span> <span class="arrow">▼</span>
+                    </div>
+                    <div class="category-pane-content">
+                        <h3 class="category-pane-title">🍤 Snacks & Fried Items</h3>
+                        <div class="item-grid">
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/Chicken%20Pokora.jpg?raw=true" alt="Chicken Pokora"></div><div class="menu-card-name">Chicken Pokora</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/Satte.jpg?raw=true" alt="Satte"></div><div class="menu-card-name">Satte</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/Fish%20Fry%20(Vethki).jpg?raw=true" alt="Fish Fry (Vethki)"></div><div class="menu-card-name">Fish Fry (Vethki)</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/Fish%20Finger.jpg?raw=true" alt="Fish Finger"></div><div class="menu-card-name">Fish Finger</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/boithok_khana_m(img)/French%20Fry.jpg?raw=true" alt="French Fry"></div><div class="menu-card-name">French Fry</div></div>
+                            <div class="menu-card"><div class="menu-card-img"><span class="placeholder">🧀</span></div><div class="menu-card-name">Paneer Pakora</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. Desserts & Beverages -->
+                <div class="category-pane" id="pane-desserts">
+                    <div class="mobile-cat-header" onclick="toggleMobilePane(this)">
+                        <span>🍨 Desserts & Beverages</span> <span class="arrow">▼</span>
+                    </div>
+                    <div class="category-pane-content">
+                        <h3 class="category-pane-title">🍨 Desserts & Beverages</h3>
+                        <div class="item-grid">
+                            <div class="menu-card"><div class="menu-card-img"><span class="placeholder">🥤</span></div><div class="menu-card-name">Cold Drinks</div></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div style="text-align: center; padding: 0 20px 50px;">
+            <button class="contact-btn" onclick="showSection('home'); setTimeout(() => scrollToSection('home-contact'), 500);" style="padding: 15px 40px; font-size: 16px; background: #FFD700; color: #333; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">অর্ডার করুন (Order Now)</button>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="hidden">
+        <div class="section-container">
+            <div class="about-content">
+                <h2>About Us</h2>
+                <p>
+                   Welcome to 'Boithok Khana', Chandannagar's newest destination for great conversations and amazing food. From mouth-watering snacks to delicious biryani and main courses, we have something to satisfy every craving.
+                </p>
+                <p>
+                    It is the perfect place to hang out and create beautiful memories with your friends and loved ones. Our cozy and inviting atmosphere makes your everyday chats even more lively and enjoyable.
+                </p>
+                <p>
+                    Besides being a great hangout spot, our cafe offers a peaceful, silent environment for those who need to work. You can easily plug in your laptop and finish your office tasks without any noisy distractions.
+                </p>
+                <p>
+                    Keeping everyone in mind, we have kept our food prices extremely reasonable and budget-friendly. Visit us today to enjoy top-quality food and a great time without breaking the bank!
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="hidden">
+        <div class="section-container">
+            <h2 class="section-title">ছবির সংগ্রহ (Gallery)</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/picture%201.jpg?raw=true" alt="Fuchka">
+                   
+                </div>
+                <div class="gallery-item">
+                    <img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/picture%202.jpg?raw=true" alt="Aloo Chop">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/picture%203.jpg?raw=true" alt="Luchi-Bhaji">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/picture%204.jpg?raw=true" alt="Momos">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/picture%205.jpg?raw=true" alt="Chana Chur">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/picture%206.jpg?raw=true" alt="Jhal Muri">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/picture%207.jpg?raw=true" alt="Our Chef">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/picture%208.jpg?raw=true" alt="Our Shop">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="hidden">
+        <div class="contact-container" style="text-align:center;">
+            <h2>Social & Contact</h2>
+            <p style="color:#fff; margin-top:12px; max-width:900px; margin-left:auto; margin-right:auto;">Follow our Instagram and Facebook for the latest photos, menu updates and special offers. You can also contact us using the details below.</p>
+            <div style="text-align:center; margin-top:18px;">
+                <a class="social-btn social-ig" href="https://www.instagram.com/boithok_khana26?igsi=MXc4a3FuY3R2eHN3cA==" target="_blank" rel="noopener" style="margin-right:12px;">📸 Instagram — @boithok_khana26</a>
+                <a class="social-btn social-fb" href="https://www.facebook.com/share/1Big3cWn8X/" target="_blank" rel="noopener">👍 Facebook — Boithok Khana</a>
+            </div>
+
+            <div class="contact-info" style="margin-top:20px; background: rgba(255,255,255,0.95); display:inline-block; padding:18px; border-radius:10px; color:#333; text-align:left;">
+                <p><strong>📧 Email:</strong> boithakkhana26@gmail.com</p>
+                <p><strong>💬 WhatsApp (text only):</strong> +91-9433459785 — Please message us on WhatsApp; avoid regular voice calls to this number.</p>
+                <p><strong>⏰ Working Hours:</strong> 1:00 PM – 10:00 PM</p>
+                <p><strong>📍 Location:</strong> Nilkantha Sarkar St, Bagbazar, Sukhsanatantala, Chandannagar, West Bengal 712136</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Future Updates Section -->
+    <section id="updates" class="hidden">
+        <div class="section-container">
+            <div class="about-content" style="text-align: center; background: rgba(0, 0, 0, 0.35); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 215, 0, 0.35); border-radius: 16px; padding: 60px 30px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);">
+                
+                <h2 style="color: #FFD700; border-bottom: 3px solid #FFD700; padding-bottom: 15px; margin-bottom: 25px;">ভবিষ্যৎ আপডেট (Future Updates)</h2>
+                <p style="font-size: 22px; color: #fff; font-weight: 700; margin-bottom: 12px;">নতুন নতুন মেনু আইটেম এবং বিশেষ আপডেট শীঘ্রই আসছে!</p>
+                <p style="font-size: 16px; color: #ddd; font-style: italic; margin-bottom: 0;">New menu items, special offers, and exciting updates will be published here soon. Stay tuned!</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy;All Rights Reserved © BOITHOK KHANA 2026</p>
+        <p>Enjoy Traditional Bengali Street Food!</p>
+    </footer>
+
+    <script>
+        // Desktop Category Selection
+        function selectDesktopCategory(catId) {
+            const buttons = document.querySelectorAll('.sidebar-btn');
+            buttons.forEach(btn => {
+                if (btn.getAttribute('data-cat') === catId) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            const prompt = document.getElementById('menuPrompt');
+            if (prompt) prompt.style.display = 'none';
+
+            const panes = document.querySelectorAll('.category-pane');
+            panes.forEach(pane => {
+                if (pane.id === 'pane-' + catId) {
+                    pane.classList.add('active');
+                } else {
+                    pane.classList.remove('active');
+                }
+            });
+        }
+
+        // Mobile Accordion Toggle
+        function toggleMobilePane(headerEl) {
+            const paneEl = headerEl.parentElement;
+            paneEl.classList.toggle('open');
+        }
+
+        // Reset menu prompt when navigating to menu section
+        function resetMenuSelection() {
+            if (window.innerWidth > 768) {
+                const prompt = document.getElementById('menuPrompt');
+                if (prompt) prompt.style.display = 'flex';
+
+                const buttons = document.querySelectorAll('.sidebar-btn');
+                buttons.forEach(btn => btn.classList.remove('active'));
+
+                const panes = document.querySelectorAll('.category-pane');
+                panes.forEach(pane => pane.classList.remove('active'));
+            }
+        }
+
+        // Function to scroll to a section within the home page
+        function scrollToSection(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        // Function to show/hide sections
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+                section.classList.remove('visible');
+                section.classList.add('hidden');
+            });
+
+            const selectedSection = document.getElementById(sectionId);
+            if (selectedSection) {
+                selectedSection.classList.remove('hidden');
+                selectedSection.classList.add('visible');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                if (sectionId === 'menu') {
+                    resetMenuSelection();
+                }
+            }
+        }
+
+        // Hamburger menu toggle
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            const hamburger = document.querySelector('.hamburger-menu');
+            navLinks.classList.toggle('active');
+            hamburger.classList.toggle('active');
+            // mark body so we can show mobile-only controls (close button)
+            document.body.classList.toggle('menu-open');
+        }
+
+        // Close menu
+        function closeMenu() {
+            const navLinks = document.getElementById('navLinks');
+            const hamburger = document.querySelector('.hamburger-menu');
+            navLinks.classList.remove('active');
+            hamburger.classList.remove('active');
+            document.body.classList.remove('menu-open');
+        }
+
+        // Handle form submission
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+
+            alert(`ধন্যবাদ ${name}!\n\nআপনার বার্তা সফলভাবে পাঠানো হয়েছে।\nআমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।\n\n---\nThank you ${name}!\n\nYour message has been sent successfully.\nWe will contact you shortly.`);
+
+            document.querySelector('.contact-form').reset();
+
+            console.log({
+                name: name,
+                email: email,
+                phone: phone,
+                subject: subject,
+                message: message,
+                timestamp: new Date()
+            });
+        }
+
+        // Smooth scroll for anchor links and set active tab state
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                showSection(targetId);
+
+                // Update active tab visuals (desktop tabs)
+                document.querySelectorAll('.tabs-container .tab').forEach(t => t.classList.remove('active'));
+                const match = document.querySelector('.tabs-container .tab[href="#' + targetId + '"]');
+                if (match) match.classList.add('active');
+
+                // Close mobile menu if open
+                closeMenu();
+            });
+        });
+
+        // Modal functions for Location (keeping for Location modal)
+        function openLocationModal() {
+            document.getElementById('locationModal').style.display = 'block';
+        }
+
+        function closeLocationModal() {
+            document.getElementById('locationModal').style.display = 'none';
+        }
+
+        // Scroll event listener for transparency effects and dark theme
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            const body = document.body;
+            const homeAboutSection = document.querySelector('.home-about-section');
+            const homeContactSection = document.querySelector('.home-contact-section');
+            
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+                body.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+                body.classList.remove('scrolled');
+            }
+
+            // Add dark theme when scrolling past hero section
+            if (homeAboutSection) {
+                const homeAboutPosition = homeAboutSection.offsetTop;
+                if (window.scrollY > homeAboutPosition - 300) {
+                    homeAboutSection.classList.add('dark-theme');
+                } else {
+                    homeAboutSection.classList.remove('dark-theme');
+                }
+            }
+
+            // Add dark theme to contact section as well
+            if (homeContactSection) {
+                const homeContactPosition = homeContactSection.offsetTop;
+                if (window.scrollY > homeContactPosition - 300) {
+                    homeContactSection.classList.add('dark-theme');
+                } else {
+                    homeContactSection.classList.remove('dark-theme');
+                }
+            }
+        });
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const locationModal = document.getElementById('locationModal');
+            
+            if (event.target == locationModal) {
+                locationModal.style.display = 'none';
+            }
+        };
+
+        // Initialize with home section visible and set active tab
+        window.addEventListener('load', function() {
+            showSection('home');
+            const homeTab = document.querySelector('.tabs-container .tab[href="#home"]');
+            if (homeTab) homeTab.classList.add('active');
+
+            // ===== WALKING PEOPLE ANIMATION =====
+            initWalkingPeople();
+        });
+
+        function initWalkingPeople() {
+            const people = document.getElementById('navPeople');
+            const container = document.getElementById('tabsContainer');
+            const tabs = container.querySelectorAll('.tab');
+            if (!people || !tabs.length) return;
+
+            let activeTab = tabs[0]; // Home by default
+            let currentTab = tabs[0];
+            let isMoving = false;
+            let transitionTimer = null;
+
+            // Position people under a tab
+            function positionPeopleAtTab(tab, animate) {
+                const containerRect = container.getBoundingClientRect();
+                const tabRect = tab.getBoundingClientRect();
+                const peopleWidth = people.offsetWidth;
+                const targetLeft = (tabRect.left - containerRect.left) + (tabRect.width / 2) - (peopleWidth / 2);
+
+                if (animate) {
+                    // Stand up first
+                    people.classList.remove('sitting');
+                    people.classList.add('standing');
+
+                    // After brief stand, start walking
+                    setTimeout(function() {
+                        people.classList.remove('standing');
+                        people.classList.add('walking');
+                        people.style.left = targetLeft + 'px';
+                    }, 150);
+                } else {
+                    people.style.left = targetLeft + 'px';
+                }
+
+                currentTab = tab;
+            }
+
+            // Sit down at current position
+            function sitDown() {
+                people.classList.remove('walking', 'standing');
+                people.classList.add('sitting');
+                isMoving = false;
+            }
+
+            // Listen for transition end to sit down after walking
+            people.addEventListener('transitionend', function(e) {
+                if (e.propertyName === 'left' && people.classList.contains('walking')) {
+                    sitDown();
+                }
+            });
+
+            // Hover: walk to hovered tab
+            tabs.forEach(function(tab) {
+                tab.addEventListener('mouseenter', function() {
+                    if (currentTab === tab) return;
+                    clearTimeout(transitionTimer);
+                    isMoving = true;
+                    positionPeopleAtTab(tab, true);
+                });
+
+                // Click: set as active, sit down immediately
+                tab.addEventListener('click', function() {
+                    activeTab = tab;
+                    currentTab = tab;
+                    clearTimeout(transitionTimer);
+
+                    // Stop walking and sit
+                    setTimeout(function() {
+                        sitDown();
+                    }, 100);
+                });
+            });
+
+            // When mouse leaves tabs area, walk back to active tab
+            container.addEventListener('mouseleave', function() {
+                if (currentTab === activeTab) return;
+                clearTimeout(transitionTimer);
+                isMoving = true;
+                positionPeopleAtTab(activeTab, true);
+            });
+
+            // Initial position (no animation)
+            setTimeout(function() {
+                positionPeopleAtTab(activeTab, false);
+            }, 100);
+
+            // Reposition on window resize
+            window.addEventListener('resize', function() {
+                positionPeopleAtTab(currentTab, false);
+            });
+        }
+        // ===== END WALKING PEOPLE =====
+
+    </script>
+</body>
+</html>

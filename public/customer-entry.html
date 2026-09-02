@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Data Entry - BOITHOK KHANA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /* Same background as menu section */
+            background-image: 
+                linear-gradient(135deg, rgba(139, 0, 0, 0.7) 0%, rgba(220, 20, 60, 0.7) 100%),
+                url('https://github.com/workarijit06/BoithokKhana_social/blob/main/ChatGPT%20Image%20May%2031,%202026,%2009_19_03%20AM.png?raw=true');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            color: #fff;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .header-logo {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .header-logo img {
+            height: 90px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
+        }
+
+        /* Floating animation for data entry box */
+        @keyframes floatCard {
+            0%, 100% {
+                transform: translateY(0px);
+                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 25px rgba(255, 215, 0, 0.25);
+            }
+            50% {
+                transform: translateY(-16px);
+                box-shadow: 0 28px 45px rgba(0, 0, 0, 0.65), 0 0 40px rgba(255, 215, 0, 0.45);
+            }
+        }
+
+        .data-entry-container {
+            width: 100%;
+            max-width: 480px;
+            background: rgba(10, 14, 39, 0.65);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            animation: floatCard 5s ease-in-out infinite;
+            position: relative;
+        }
+
+        .form-title {
+            text-align: center;
+            color: #FFD700;
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            letter-spacing: 1px;
+        }
+
+        .form-subtitle {
+            text-align: center;
+            color: #ddd;
+            font-size: 14px;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #FFD700;
+            font-size: 15px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            font-size: 15px;
+            color: #111;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            background: #ffffff;
+            border-color: #FFD700;
+            box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: #8B0000;
+            font-weight: 800;
+            font-size: 17px;
+            padding: 15px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.6);
+            background: linear-gradient(135deg, #FFA500 0%, #FFD700 100%);
+        }
+
+        .success-msg {
+            display: none;
+            margin-top: 20px;
+            padding: 12px;
+            background: rgba(76, 175, 80, 0.25);
+            border: 1px solid #4CAF50;
+            color: #a5d6a7;
+            text-align: center;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .error-msg {
+            display: none;
+            margin-top: 20px;
+            padding: 12px;
+            background: rgba(220, 20, 60, 0.25);
+            border: 1px solid #ff6b6b;
+            color: #ff8e8e;
+            text-align: center;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        /* Date input style tweak for dark theme */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+            filter: invert(0.2);
+        }
+
+        @media (max-width: 480px) {
+            .data-entry-container {
+                padding: 30px 20px;
+            }
+            .form-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-logo">
+        <img src="https://github.com/workarijit06/BoithokKhana_social/blob/main/logo.png?raw=true" alt="Boithok Khana Logo">
+    </div>
+
+    <!-- Data Entry Floating Card -->
+    <div class="data-entry-container">
+        <h2 class="form-title">Customer Registration</h2>
+        <p class="form-subtitle">গ্রাহকের তথ্য এন্ট্রি (Customer Information Entry)</p>
+
+        <form id="customerForm" onsubmit="handleSubmit(event)">
+            <div class="form-group">
+                <label for="name">Name / নাম</label>
+                <input type="text" id="name" name="name" placeholder="Enter full name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="dob">Birth Date / জন্মতারিখ</label>
+                <input type="date" id="dob" name="dob" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Number / মোবাইল নম্বর</label>
+                <input type="tel" id="phone" name="phone" placeholder="Enter phone number" required>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">Submit Information</button>
+        </form>
+
+        <div id="successMsg" class="success-msg">
+            Thank you! Customer details submitted successfully.
+        </div>
+
+        <div id="errorMsg" class="error-msg">
+            Failed to save customer data. Please try again.
+        </div>
+    </div>
+
+    <script>
+        async function handleSubmit(event) {
+            event.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const msg = document.getElementById('successMsg');
+            const errMsg = document.getElementById('errorMsg');
+
+            msg.style.display = 'none';
+            errMsg.style.display = 'none';
+
+            const name = document.getElementById('name').value;
+            const dob = document.getElementById('dob').value;
+            const phone = document.getElementById('phone').value;
+
+            btn.disabled = true;
+            btn.innerText = 'Submitting...';
+
+            try {
+                // Post customer data to Backend API
+                const res = await fetch('/api/customers', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, dob, phone })
+                });
+
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    msg.style.display = 'block';
+                    document.getElementById('customerForm').reset();
+                    setTimeout(() => { msg.style.display = 'none'; }, 4000);
+                } else {
+                    throw new Error(data.message || 'Failed to register customer');
+                }
+            } catch (err) {
+                console.error('Registration Error:', err);
+                errMsg.innerText = err.message || 'Failed to submit registration.';
+                errMsg.style.display = 'block';
+                setTimeout(() => { errMsg.style.display = 'none'; }, 5000);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Submit Information';
+            }
+        }
+    </script>
+</body>
+</html>
